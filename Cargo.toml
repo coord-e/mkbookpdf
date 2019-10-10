@@ -1,0 +1,8 @@
+[package]
+name = "mkbooklet"
+version = "0.1.0"
+authors = ["coord.e <me@coord-e.com>"]
+edition = "2018"
+
+[dependencies]
+lopdf = "0.23.0"
