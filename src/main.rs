@@ -46,7 +46,7 @@ fn main() -> Result<(), Error> {
         .flat_map(|idx| vec![len - 2 * idx, 1 + 2 * idx, 2 + 2 * idx, len - 1 - 2 * idx])
         .map(|idx| {
             pages
-                .get(idx)
+                .get(idx - 1)
                 .cloned()
                 .unwrap_or_else(|| add_empty_page(&mut doc, pages_id))
         })
