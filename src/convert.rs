@@ -39,8 +39,8 @@ pub fn convert(doc: &mut Document) -> Result<(), Error> {
                 .get(idx - 1)
                 .cloned()
                 .unwrap_or_else(|| add_empty_page(doc, pages_id))
+                .into()
         })
-        .map(Into::into)
         .collect();
 
     let pages_mut = doc.get_object_mut(pages_id)?.as_dict_mut()?;
