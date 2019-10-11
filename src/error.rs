@@ -17,3 +17,18 @@ impl fmt::Display for Error {
 }
 
 impl error::Error for Error {}
+
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Self {
+        Error::IO(err)
+    }
+}
+
+impl From<lopdf::Error> for Error {
+    fn from(err: lopdf::Error) -> Self {
+        match err {
+            lopdf::Error::IO(e) => Error::IO(e),
+            _ => Error::PDF(err),
+        }
+    }
+}
