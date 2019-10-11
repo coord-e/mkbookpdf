@@ -10,6 +10,9 @@ struct Opt {
 
     #[structopt(name = "FILE", parse(from_os_str))]
     input: PathBuf,
+
+    #[structopt(short, long)]
+    print: bool,
 }
 
 fn main() -> Result<(), mkbooklet::Error> {
@@ -18,6 +21,11 @@ fn main() -> Result<(), mkbooklet::Error> {
 
     mkbooklet::convert(&mut doc)?;
 
-    doc.save(opt.output)?;
-    Ok(())
+    doc.save(&opt.output)?;
+
+    if opt.print {
+        mkbooklet::print(opt.output)
+    } else {
+        Ok(())
+    }
 }
