@@ -1,4 +1,5 @@
-use lopdf::{dictionary, Document, Error, Object, ObjectId, Stream};
+use crate::Error;
+use lopdf::{dictionary, Document, Object, ObjectId, Stream};
 
 fn calc_resulting_length(len: usize) -> usize {
     if len % 4 == 0 {

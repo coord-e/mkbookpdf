@@ -1,4 +1,4 @@
-use lopdf::{Document, Error};
+use lopdf::Document;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -12,7 +12,7 @@ struct Opt {
     input: PathBuf,
 }
 
-fn main() -> Result<(), Error> {
+fn main() -> Result<(), mkbooklet::Error> {
     let opt = Opt::from_args();
     let mut doc = Document::load(opt.input)?;
 
