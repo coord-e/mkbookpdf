@@ -26,8 +26,14 @@ pub fn convert(doc: &mut Document) -> Result<(), Error> {
         .as_dict()?;
     let pages_id = root.get(b"Pages")?.as_reference()?;
 
+    use std::iter::once;
     let new_pages = (0..len / 4)
-        .flat_map(|idx| vec![len - 2 * idx, 1 + 2 * idx, 2 + 2 * idx, len - 1 - 2 * idx])
+        .flat_map(|idx| {
+            once(len - 2 * idx)
+                .chain(once(1 + 2 * idx))
+                .chain(once(2 + 2 * idx))
+                .chain(once(len - 1 - 2 * idx))
+        })
         .map(|idx| {
             pages
                 .get(idx - 1)
