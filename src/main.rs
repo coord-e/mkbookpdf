@@ -5,6 +5,7 @@ use tempfile::NamedTempFile;
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "mkbooklet")]
+#[allow(clippy::option_option)]
 struct Opt {
     #[structopt(short, long, parse(from_os_str))]
     output: Option<PathBuf>,
