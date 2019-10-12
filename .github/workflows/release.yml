@@ -1,0 +1,44 @@
+on:
+  push:
+    tags: ['*']
+
+name: Release
+
+jobs:
+  release:
+    name: Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: macOS-latest
+            target: x86_64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          default: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features --target=${{ matrix.target }}
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --release --all-features --target=${{ matrix.target }}
+      - run: mv target/${{ matrix.target }}/release/mkbooklet mkbooklet-${{ matrix.target }}
+        if: matrix.os != 'windows-latest'
+      - run: move target\${{ matrix.target }}\release\mkbooklet.exe mkbooklet-${{ matrix.target }}.exe
+        if: matrix.os == 'windows-latest'
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: mkbooklet-*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
