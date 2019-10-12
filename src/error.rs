@@ -1,5 +1,7 @@
 use lopdf;
-use std::{error, fmt, io, path, process};
+use std::{error, fmt, io, path, process, result};
+
+pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
