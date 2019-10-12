@@ -1,4 +1,5 @@
 use crate::Error;
+use std::io::ErrorKind::NotFound;
 use std::path::Path;
 use std::process::Command;
 
@@ -24,7 +25,13 @@ pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<(), Err
         cmd.args(&["-d", &p]);
     }
 
-    let status = cmd.status()?;
+    let status = cmd.status().map_err(|e| {
+        if e.kind() == NotFound {
+            Error::LPNotFound
+        } else {
+            Error::IO(e)
+        }
+    })?;
 
     if !status.success() {
         Err(Error::Print(status))

@@ -8,6 +8,7 @@ pub enum Error {
     Print(process::ExitStatus),
     InvaildPath(path::PathBuf),
     MissingOutput,
+    LPNotFound,
 }
 
 impl fmt::Display for Error {
@@ -18,6 +19,7 @@ impl fmt::Display for Error {
             Error::Print(code) => write!(f, "Print command returned non-zero exit code: {}", code),
             Error::InvaildPath(path) => write!(f, "Unsupported path string: {}", path.display()),
             Error::MissingOutput => write!(f, "--output is required except in print mode"),
+            Error::LPNotFound => write!(f, "`lp` command could not be found"),
         }
     }
 }
