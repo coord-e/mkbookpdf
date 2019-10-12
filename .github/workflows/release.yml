@@ -14,10 +14,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-musl
+            rust_flags: ''
           - os: macOS-latest
             target: x86_64-apple-darwin
+            rust_flags: ''
           - os: windows-latest
             target: x86_64-pc-windows-msvc
+            rust_flags: -C target-feature=+crt-static
+    env:
+      RUSTFLAGS: ${{ matrix.rust_flags }}
+      MACOSX_DEPLOYMENT_TARGET: 10.7
     steps:
       - uses: actions/checkout@master
       - uses: actions-rs/toolchain@v1
