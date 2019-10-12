@@ -1,5 +1,5 @@
 use crate::Error;
-use std::io::ErrorKind::NotFound;
+use std::io::ErrorKind;
 use std::path::Path;
 use std::process::Command;
 
@@ -26,7 +26,7 @@ pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<(), Err
     }
 
     let status = cmd.status().map_err(|e| {
-        if e.kind() == NotFound {
+        if e.kind() == ErrorKind::NotFound {
             Error::LPNotFound
         } else {
             Error::IO(e)
