@@ -16,12 +16,21 @@ struct Opt {
     print: Option<Option<String>>,
 }
 
-fn print_mode(doc: &mut Document, printer: Option<String>) -> Result<(), mkbooklet::Error> {
-    let mut file = NamedTempFile::new()?;
-    doc.save_to(&mut file)?;
+fn print_mode(
+    doc: &mut Document,
+    output: Option<PathBuf>,
+    printer: Option<String>,
+) -> Result<(), mkbooklet::Error> {
+    if let Some(ref path) = output {
+        doc.save(path)?;
+        mkbooklet::print(path, printer)
+    } else {
+        let mut file = NamedTempFile::new()?;
+        doc.save_to(&mut file)?;
 
-    let path = file.into_temp_path();
-    mkbooklet::print(path, printer)
+        let path = file.into_temp_path();
+        mkbooklet::print(path, printer)
+    }
 }
 
 fn main() -> Result<(), mkbooklet::Error> {
@@ -31,7 +40,7 @@ fn main() -> Result<(), mkbooklet::Error> {
     mkbooklet::convert(doc)?;
 
     if let Some(p) = opt.print {
-        print_mode(doc, p)
+        print_mode(doc, opt.output, p)
     } else {
         doc.save(opt.output.ok_or(mkbooklet::Error::MissingOutput)?)?;
         Ok(())
