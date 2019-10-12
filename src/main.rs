@@ -12,7 +12,7 @@ struct Opt {
     input: PathBuf,
 
     #[structopt(short, long)]
-    print: bool,
+    print: Option<Option<String>>,
 }
 
 fn main() -> Result<(), mkbooklet::Error> {
@@ -23,8 +23,8 @@ fn main() -> Result<(), mkbooklet::Error> {
 
     doc.save(&opt.output)?;
 
-    if opt.print {
-        mkbooklet::print(opt.output)
+    if let Some(printer) = opt.print {
+        mkbooklet::print(opt.output, printer)
     } else {
         Ok(())
     }
