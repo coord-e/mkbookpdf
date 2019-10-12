@@ -1,9 +1,9 @@
-use crate::Error;
+use crate::{Error, Result};
 use std::io::ErrorKind;
 use std::path::Path;
 use std::process::Command;
 
-pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<(), Error> {
+pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<()> {
     let path = path.as_ref();
     let path_str = path
         .to_str()

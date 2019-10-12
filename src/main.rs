@@ -1,4 +1,5 @@
 use lopdf::Document;
+use mkbooklet::{Error, Result};
 use std::path::PathBuf;
 use structopt::StructOpt;
 use tempfile::NamedTempFile;
@@ -17,11 +18,7 @@ struct Opt {
     print: Option<Option<String>>,
 }
 
-fn print_mode(
-    doc: &mut Document,
-    output: Option<PathBuf>,
-    printer: Option<String>,
-) -> Result<(), mkbooklet::Error> {
+fn print_mode(doc: &mut Document, output: Option<PathBuf>, printer: Option<String>) -> Result<()> {
     if let Some(ref path) = output {
         doc.save(path)?;
         mkbooklet::print(path, printer)
@@ -34,7 +31,7 @@ fn print_mode(
     }
 }
 
-fn main() -> Result<(), mkbooklet::Error> {
+fn main() -> Result<()> {
     let opt = Opt::from_args();
     let doc = &mut Document::load(opt.input)?;
 
@@ -43,7 +40,7 @@ fn main() -> Result<(), mkbooklet::Error> {
     if let Some(p) = opt.print {
         print_mode(doc, opt.output, p)
     } else {
-        doc.save(opt.output.ok_or(mkbooklet::Error::MissingOutput)?)?;
+        doc.save(opt.output.ok_or(Error::MissingOutput)?)?;
         Ok(())
     }
 }

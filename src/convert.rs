@@ -1,4 +1,4 @@
-use crate::Error;
+use crate::Result;
 use lopdf::{dictionary, Document, Object, ObjectId, Stream};
 
 fn calc_resulting_length(len: usize) -> usize {
@@ -18,7 +18,7 @@ fn add_empty_page(doc: &mut Document, pages_id: ObjectId) -> ObjectId {
     })
 }
 
-pub fn convert(doc: &mut Document) -> Result<(), Error> {
+pub fn convert(doc: &mut Document) -> Result<()> {
     let pages: Vec<ObjectId> = doc.page_iter().collect();
     let len = calc_resulting_length(pages.len());
 
