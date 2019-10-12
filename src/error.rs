@@ -1,10 +1,14 @@
 use lopdf;
-use std::{error, fmt, io};
+use std::{error, fmt, io, path, process};
 
 #[derive(Debug)]
 pub enum Error {
     IO(io::Error),
     PDF(lopdf::Error),
+    Print(process::ExitStatus),
+    InvaildPath(path::PathBuf),
+    MissingOutput,
+    LPNotFound,
 }
 
 impl fmt::Display for Error {
@@ -12,6 +16,10 @@ impl fmt::Display for Error {
         match self {
             Error::IO(e) => write!(f, "IO Error: {}", e),
             Error::PDF(e) => write!(f, "PDF Error: {}", e),
+            Error::Print(code) => write!(f, "Print command returned non-zero exit code: {}", code),
+            Error::InvaildPath(path) => write!(f, "Unsupported path string: {}", path.display()),
+            Error::MissingOutput => write!(f, "--output is required except in print mode"),
+            Error::LPNotFound => write!(f, "`lp` command could not be found"),
         }
     }
 }
