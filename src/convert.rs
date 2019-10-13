@@ -55,3 +55,23 @@ pub fn convert(doc: &mut Document) -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_add_empty_page() -> Result<()> {
+        let mut doc = Document::new();
+        let pages_id = get_pages_id(&doc)?;
+
+        let page_id = add_empty_page(&mut doc, pages_id);
+
+        let dict = doc.get_object(page_id)?.as_dict()?;
+        assert_eq!(dict.get(b"Type")?.as_name_str()?, "Page");
+        assert_eq!(dict.get(b"Parent")?.as_reference()?, pages_id);
+        assert_eq!(dict.get(b"Contents")?.is_null(), false);
+
+        Ok(())
+    }
+}
