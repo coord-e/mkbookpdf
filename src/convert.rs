@@ -60,9 +60,13 @@ pub fn convert(doc: &mut Document) -> Result<()> {
 mod tests {
     use super::*;
 
+    fn make_test_document() -> Result<Document> {
+        return Document::load("tests/data/sample.pdf").map_err(Into::into);
+    }
+
     #[test]
     fn test_add_empty_page() -> Result<()> {
-        let mut doc = Document::new();
+        let mut doc = make_test_document()?;
         let pages_id = get_pages_id(&doc)?;
 
         let page_id = add_empty_page(&mut doc, pages_id);
