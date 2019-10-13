@@ -41,6 +41,11 @@ fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Result<Vec<Object>
         .get(b"MediaBox")?
         .clone();
 
+    for page in &pages {
+        let page_mut = doc.get_object_mut(page.clone())?.as_dict_mut()?;
+        page_mut.set(b"Parent".to_vec(), Object::Reference(pages_id));
+    }
+
     use std::iter::once;
     Ok((0..len / 4)
         .flat_map(|idx| {
