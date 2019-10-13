@@ -68,3 +68,17 @@ fn test_print_output() {
 
     temp.assert(predicate::function(|x: &[u8]| !x.is_empty()).from_file_path());
 }
+
+#[test]
+fn test_print_name() {
+    let name: &str = "MY_PRINTER";
+
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "echo")
+        .arg("tests/data/sample.pdf")
+        .args(&["--print", name])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(name));
+}
