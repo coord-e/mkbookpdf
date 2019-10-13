@@ -20,7 +20,7 @@ pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<()> {
 
     cmd.args(&[
         "-o",
-        "sides=two-sided-short=edge",
+        "sides=two-sided-short-edge",
         "-o",
         "number-up=2",
         "-o",
