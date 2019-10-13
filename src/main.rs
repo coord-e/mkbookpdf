@@ -1,5 +1,5 @@
 use lopdf::Document;
-use mkbooklet::{Error, Result};
+use mkbooklet::Result;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use tempfile::NamedTempFile;
@@ -8,7 +8,7 @@ use tempfile::NamedTempFile;
 #[structopt(name = "mkbooklet")]
 #[allow(clippy::option_option)]
 struct Opt {
-    #[structopt(short, long, parse(from_os_str))]
+    #[structopt(short, long, required_unless = "print", parse(from_os_str))]
     output: Option<PathBuf>,
 
     #[structopt(name = "FILE", parse(from_os_str))]
@@ -40,7 +40,7 @@ fn main() -> Result<()> {
     if let Some(p) = opt.print {
         print_mode(doc, opt.output, p)
     } else {
-        doc.save(opt.output.ok_or(Error::MissingOutput)?)?;
+        doc.save(opt.output.unwrap())?;
         Ok(())
     }
 }

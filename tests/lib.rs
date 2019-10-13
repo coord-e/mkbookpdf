@@ -90,6 +90,7 @@ fn test_not_found_input() {
     Command::cargo_bin(crate_name!())
         .unwrap()
         .arg("tests/data/no_such_file.pdf")
+        .args(&["-o", "tests/data/no_such_file.pdf"])
         .assert()
         .failure()
         .stderr(
