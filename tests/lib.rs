@@ -23,6 +23,21 @@ fn test_no_output() {
 }
 
 #[test]
+fn test_output() {
+    let temp = NamedTempFile::new("tmp.pdf").unwrap();
+    let path = temp.path();
+
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .arg("tests/data/sample.pdf")
+        .args(&["-o", path.to_str().unwrap()])
+        .assert()
+        .success();
+
+    temp.assert(predicate::function(|x: &[u8]| !x.is_empty()).from_file_path());
+}
+
+#[test]
 fn test_print() {
     Command::cargo_bin(crate_name!())
         .unwrap()
