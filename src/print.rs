@@ -13,7 +13,7 @@ pub fn print<P: AsRef<Path>>(path: P, opts: PrintOpt) -> Result<()> {
     let path = path.as_ref();
     let path_str = path
         .to_str()
-        .ok_or_else(|| Error::InvaildPath(path.to_path_buf()))?;
+        .ok_or_else(|| Error::InvalidPath(path.to_path_buf()))?;
 
     let mut cmd = Command::new(&opts.lp_bin);
 

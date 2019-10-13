@@ -8,7 +8,7 @@ pub enum Error {
     IO(io::Error),
     PDF(lopdf::Error),
     Print(String, process::ExitStatus),
-    InvaildPath(path::PathBuf),
+    InvalidPath(path::PathBuf),
     LPNotFound(String),
 }
 
@@ -18,7 +18,7 @@ impl fmt::Display for Error {
             Error::IO(e) => write!(f, "{}", e),
             Error::PDF(e) => write!(f, "error processing PDF file: {}", e),
             Error::Print(cmd, code) => write!(f, "`{}` returned non-zero {}", cmd, code),
-            Error::InvaildPath(path) => write!(f, "unsupported path string: {}", path.display()),
+            Error::InvalidPath(path) => write!(f, "unsupported path string: {}", path.display()),
             Error::LPNotFound(cmd) => write!(f, "`{}` could not be found", cmd),
         }
     }
