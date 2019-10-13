@@ -86,4 +86,19 @@ mod tests {
 
         Ok(())
     }
+
+    #[test]
+    fn test_get_pages_id() -> Result<()> {
+        let doc = make_test_document()?;
+
+        let pages_id = get_pages_id(&doc)?;
+
+        let dict = doc.get_object(pages_id)?.as_dict()?;
+        assert_eq!(
+            dict.get(b"Count")?.as_i64()?,
+            dict.get(b"Kids")?.as_array()?.len() as i64
+        );
+
+        Ok(())
+    }
 }
