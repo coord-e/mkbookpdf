@@ -108,7 +108,7 @@ fn test_not_found_lp() {
         .arg("--print")
         .assert()
         .failure()
-        .stderr(predicate::str::contains("NotFound"));
+        .stderr(predicate::str::contains("command could not be found"));
 }
 
 #[test]
@@ -120,7 +120,9 @@ fn test_fail_lp() {
         .arg("--print")
         .assert()
         .failure()
-        .stderr(predicate::str::contains("Error: Print"));
+        .stderr(predicate::str::contains(
+            "Print command returned non-zero exit code",
+        ));
 }
 
 #[test]
@@ -136,7 +138,7 @@ fn test_invalid_pdf() {
         .args(&["-o", path.to_str().unwrap()])
         .assert()
         .failure()
-        .stderr(predicate::str::contains("Error: PDF"));
+        .stderr(predicate::str::contains("PDF Error"));
 
     temp.assert(predicate::function(|x: &[u8]| x.is_empty()).from_file_path());
 }

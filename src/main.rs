@@ -34,7 +34,7 @@ fn print_mode(doc: &mut Document, output: Option<PathBuf>, printer: Option<Strin
     }
 }
 
-fn main() -> Result<()> {
+fn run() -> Result<()> {
     let opt = Opt::from_args();
     let doc = &mut Document::load(opt.input)?;
 
@@ -46,4 +46,14 @@ fn main() -> Result<()> {
         doc.save(opt.output.unwrap())?;
         Ok(())
     }
+}
+
+fn main() {
+    std::process::exit(match run() {
+        Ok(()) => 0,
+        Err(e) => {
+            eprintln!("{}", e);
+            1
+        }
+    });
 }
