@@ -1,4 +1,4 @@
-use crate::Result;
+use crate::{Error, Result};
 use lopdf::{dictionary, Document, Object, ObjectId, Stream};
 
 fn calc_resulting_length(len: usize) -> usize {
@@ -9,12 +9,13 @@ fn calc_resulting_length(len: usize) -> usize {
     }
 }
 
-fn add_empty_page(doc: &mut Document, pages_id: ObjectId) -> ObjectId {
+fn add_empty_page(doc: &mut Document, media_box: Object, pages_id: ObjectId) -> ObjectId {
     let content_id = doc.add_object(Stream::new(dictionary! {}, vec![]));
     doc.add_object(dictionary! {
         "Type" => "Page",
         "Parent" => pages_id,
         "Contents" => content_id,
+        "MediaBox" => media_box,
     })
 }
 
@@ -25,13 +26,23 @@ fn get_pages_id(doc: &Document) -> Result<ObjectId> {
     root.get(b"Pages")?.as_reference().map_err(Into::into)
 }
 
-fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Vec<Object> {
+fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Result<Vec<Object>> {
     let pages: Vec<ObjectId> = doc.page_iter().collect();
+    if pages.is_empty() {
+        return Err(Error::EmptyPDF);
+    }
+
     let len = calc_resulting_length(pages.len());
     debug_assert!(len % 4 == 0);
 
+    let media_box = doc
+        .get_object(pages[0])?
+        .as_dict()?
+        .get(b"MediaBox")?
+        .clone();
+
     use std::iter::once;
-    (0..len / 4)
+    Ok((0..len / 4)
         .flat_map(|idx| {
             once(len - 2 * idx)
                 .chain(once(1 + 2 * idx))
@@ -42,16 +53,16 @@ fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Vec<Object> {
             pages
                 .get(idx - 1)
                 .cloned()
-                .unwrap_or_else(|| add_empty_page(doc, pages_id))
+                .unwrap_or_else(|| add_empty_page(doc, media_box.clone(), pages_id))
                 .into()
         })
-        .collect()
+        .collect())
 }
 
 pub fn convert(doc: &mut Document) -> Result<()> {
     let pages_id = get_pages_id(doc)?;
 
-    let new_pages = build_new_pages(doc, pages_id);
+    let new_pages = build_new_pages(doc, pages_id)?;
 
     let pages_mut = doc.get_object_mut(pages_id)?.as_dict_mut()?;
 
@@ -98,12 +109,23 @@ mod tests {
         let mut doc = make_test_document()?;
         let pages_id = get_pages_id(&doc)?;
 
-        let page_id = add_empty_page(&mut doc, pages_id);
+        let media_box_raw = vec![0, 0, 50, 50];
+
+        let media_box: Vec<_> = media_box_raw.clone().into_iter().map(Into::into).collect();
+        let page_id = add_empty_page(&mut doc, media_box.into(), pages_id);
 
         let dict = doc.get_object(page_id)?.as_dict()?;
         assert_eq!("Page", dict.get(b"Type")?.as_name_str()?);
         assert_eq!(pages_id, dict.get(b"Parent")?.as_reference()?);
         assert_eq!(false, dict.get(b"Contents")?.is_null());
+
+        let restored_media_box: Vec<_> = dict
+            .get(b"MediaBox")?
+            .as_array()?
+            .into_iter()
+            .map(|o| o.as_i64().map_err(Into::into))
+            .collect::<Result<_>>()?;
+        assert_eq!(media_box_raw, restored_media_box);
 
         Ok(())
     }
@@ -129,7 +151,7 @@ mod tests {
         let expected_len = calc_resulting_length(orig_pages.len());
 
         let pages_id = get_pages_id(&doc)?;
-        let pages = build_new_pages(&mut doc, pages_id);
+        let pages = build_new_pages(&mut doc, pages_id)?;
 
         assert_eq!(expected_len, pages.len());
 
