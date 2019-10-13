@@ -12,7 +12,7 @@ struct Opt {
     /// Input PDF file.
     input: PathBuf,
 
-    #[structopt(short, long, required_unless = "print", parse(from_os_str))]
+    #[structopt(short, long, required_unless = "destination", parse(from_os_str))]
     /// Specify the output file name. Requried unless --print is used.
     output: Option<PathBuf>,
 
