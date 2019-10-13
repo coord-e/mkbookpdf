@@ -101,6 +101,15 @@ mod tests {
             .collect()
     }
 
+    fn check_parents(doc: &Document, kids: &Vec<Object>, parent: &ObjectId) -> Result<()> {
+        for kid in kids {
+            let dict = doc.get_object(kid.as_reference()?)?.as_dict()?;
+            assert_eq!(parent, &dict.get(b"Parent")?.as_reference()?);
+        }
+
+        Ok(())
+    }
+
     #[test]
     fn test_calc_resulting_length() {
         assert_eq!(16, calc_resulting_length(15));
@@ -158,11 +167,11 @@ mod tests {
         let pages_id = get_pages_id(&doc)?;
         let pages = build_new_pages(&mut doc, pages_id)?;
 
-        assert_eq!(expected_len, pages.len());
-
         // re-construct the previous order
         let restored_pages = restore_pages(&pages, orig_pages.len())?;
 
+        check_parents(&doc, &pages, &pages_id)?;
+        assert_eq!(expected_len, pages.len());
         assert_eq!(orig_pages, restored_pages);
 
         Ok(())
@@ -177,12 +186,14 @@ mod tests {
 
         convert(&mut doc)?;
 
-        let pages_dict = doc.get_object(get_pages_id(&doc)?)?.as_dict()?;
+        let pages_id = get_pages_id(&doc)?;
+        let pages_dict = doc.get_object(pages_id)?.as_dict()?;
         let len = pages_dict.get(b"Count")?.as_i64()?;
         let pages = pages_dict.get(b"Kids")?.as_array()?;
 
         let restored_pages = restore_pages(pages, orig_pages.len())?;
 
+        check_parents(&doc, pages, &pages_id)?;
         assert_eq!(expected_len, pages.len());
         assert_eq!(expected_len, len as usize);
         assert_eq!(orig_pages, restored_pages);
