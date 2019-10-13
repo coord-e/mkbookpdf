@@ -9,6 +9,7 @@ homepage = "https://github.com/coord-e/mkbookpdf"
 repository = "https://github.com/coord-e/mkbookpdf"
 keywords = ["cli", "pdf", "print", "booklet"]
 categories = ["command-line-utilities"]
+readme = "README.md"
 
 [dependencies]
 lopdf = "0.23.0"
