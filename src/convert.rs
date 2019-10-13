@@ -18,14 +18,18 @@ fn add_empty_page(doc: &mut Document, pages_id: ObjectId) -> ObjectId {
     })
 }
 
+fn get_pages_id(doc: &Document) -> Result<ObjectId> {
+    let root = doc
+        .get_object(doc.trailer.get(b"Root")?.as_reference()?)?
+        .as_dict()?;
+    root.get(b"Pages")?.as_reference().map_err(Into::into)
+}
+
 pub fn convert(doc: &mut Document) -> Result<()> {
     let pages: Vec<ObjectId> = doc.page_iter().collect();
     let len = calc_resulting_length(pages.len());
 
-    let root = doc
-        .get_object(doc.trailer.get(b"Root")?.as_reference()?)?
-        .as_dict()?;
-    let pages_id = root.get(b"Pages")?.as_reference()?;
+    let pages_id = get_pages_id(doc)?;
 
     use std::iter::once;
     let new_pages = (0..len / 4)
