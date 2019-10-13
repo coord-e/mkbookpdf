@@ -92,7 +92,10 @@ fn test_not_found_input() {
         .arg("tests/data/no_such_file.pdf")
         .assert()
         .failure()
-        .stderr(predicate::str::contains("No such file"));
+        .stderr(
+            predicate::str::contains("No such file")
+                .or(predicate::str::contains("cannot find the file")),
+        );
 }
 
 #[test]
