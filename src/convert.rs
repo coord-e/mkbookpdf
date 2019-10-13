@@ -38,7 +38,8 @@ fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Result<Vec<Object>
     let media_box = doc
         .get_object(pages[0])?
         .as_dict()?
-        .get(b"MediaBox")?
+        .get(b"MediaBox")
+        .or_else(|_| doc.get_object(pages_id)?.as_dict()?.get(b"MediaBox"))?
         .clone();
 
     for page in &pages {
