@@ -157,6 +157,7 @@ mod tests {
         let restored_pages = restore_pages(pages, orig_pages.len())?;
 
         assert_eq!(expected_len, pages.len());
+        assert_eq!(expected_len, len as usize);
         assert_eq!(orig_pages, restored_pages);
 
         Ok(())
