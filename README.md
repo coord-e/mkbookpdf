@@ -1,6 +1,6 @@
 # mkbookpdf
 
-[![Actions Status](https://github.com/coord-e/mkbookpdf/workflows/Test and Lint/badge.svg)](https://github.com/coord-e/mkbookpdf/actions?workflow=Test+and+Lint)
+[![Actions Status](https://github.com/coord-e/mkbookpdf/workflows/Test%20and%20Lint/badge.svg)](https://github.com/coord-e/mkbookpdf/actions?workflow=Test+and+Lint)
 [![Actions Status](https://github.com/coord-e/mkbookpdf/workflows/Release/badge.svg)](https://github.com/coord-e/mkbookpdf/actions?workflow=Release)
 [![Crates.io](https://img.shields.io/crates/v/mkbookpdf)](https://crates.io/crates/mkbookpdf)
 [![Crates.io](https://img.shields.io/crates/l/mkbookpdf)](https://crates.io/crates/mkbookpdf)
