@@ -9,3 +9,12 @@ fn test_empty_args() {
         .assert()
         .failure();
 }
+
+#[test]
+fn test_no_output() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .arg("tests/data/sample.pdf")
+        .assert()
+        .failure();
+}
