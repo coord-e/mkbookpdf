@@ -17,7 +17,7 @@ impl fmt::Display for Error {
         match self {
             Error::IO(e) => write!(f, "IO Error: {}", e),
             Error::PDF(e) => write!(f, "PDF Error: {}", e),
-            Error::Print(code) => write!(f, "Print command returned non-zero exit code: {}", code),
+            Error::Print(code) => write!(f, "Print command returned non-zero {}", code),
             Error::InvaildPath(path) => write!(f, "Unsupported path string: {}", path.display()),
             Error::LPNotFound => write!(f, "`lp` command could not be found"),
         }
