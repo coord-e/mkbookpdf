@@ -108,6 +108,18 @@ fn test_not_found_lp() {
 }
 
 #[test]
+fn test_fail_lp() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "false")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("Error: Print"));
+}
+
+#[test]
 fn test_invalid_pdf() {
     let temp = NamedTempFile::new("tmp.pdf").unwrap();
     let path = temp.path();
