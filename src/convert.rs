@@ -61,7 +61,7 @@ mod tests {
     use super::*;
 
     fn make_test_document() -> Result<Document> {
-        return Document::load("tests/data/sample.pdf").map_err(Into::into);
+        Document::load("tests/data/sample.pdf").map_err(Into::into)
     }
 
     #[test]
