@@ -82,3 +82,43 @@ fn test_print_name() {
         .success()
         .stdout(predicate::str::contains(name));
 }
+
+#[test]
+fn test_not_found_input() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .arg("tests/data/no_such_file.pdf")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("No such file"));
+}
+
+#[test]
+fn test_not_found_lp() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "mkbl_no_such_command")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("NotFound"));
+}
+
+#[test]
+fn test_invalid_pdf() {
+    let temp = NamedTempFile::new("tmp.pdf").unwrap();
+    let path = temp.path();
+
+    temp.touch().unwrap(); // empty
+
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .arg(path.to_str().unwrap())
+        .args(&["-o", path.to_str().unwrap()])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("Error: PDF"));
+
+    temp.assert(predicate::function(|x: &[u8]| x.is_empty()).from_file_path());
+}
