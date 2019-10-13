@@ -23,13 +23,15 @@ $ mkbookpdf input.pdf -o output.pdf
 
 ## Installation
 
+Download the latest compiled binary from links below and put it in your executable path.
+
 Platform|Download
 --------|--------
 Linux 64-bit|[mkbookpdf-x86_64-unknown-linux-musl](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-unknown-linux-musl)
 macOS 64-bit|[mkbookpdf-x86_64-apple-darwin](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-apple-darwin)
 Windows 64-bit|[mkbookpdf-x86_64-pc-windows-msvc.exe](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-pc-windows-msvc.exe)
 
-Note that printing feature (`-p`, `--print`) requires `lp` utility to be installed in your system. (This means you can't use `-p` in windows)
+Note that `mkbookpdf` has no runtime requirements, except that printing feature (`-p`, `--print`) requires `lp` utility to be installed in your system. (this means you can't use `-p` in windows)
 
 ### with Cargo
 
