@@ -64,6 +64,7 @@ pub fn convert(doc: &mut Document) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Error;
 
     fn make_test_document() -> Result<Document> {
         Document::load("tests/data/sample.pdf").map_err(Into::into)
@@ -103,6 +104,40 @@ mod tests {
             dict.get(b"Count")?.as_i64()?,
             dict.get(b"Kids")?.as_array()?.len() as i64
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_build_new_pages() -> Result<()> {
+        let mut doc = make_test_document()?;
+
+        let orig_pages: Vec<ObjectId> = doc.page_iter().collect();
+        let len = calc_resulting_length(orig_pages.len());
+
+        let pages_id = get_pages_id(&doc)?;
+        let pages = build_new_pages(&mut doc, pages_id);
+
+        assert_eq!(len, pages.len());
+
+        // re-construct the previous order
+        let (first, last): (Vec<_>, Vec<_>) =
+            pages
+                .into_iter()
+                .enumerate()
+                .partition(|(i, _)| match i % 4 {
+                    1 | 2 => true,
+                    0 | 3 => false,
+                    _ => unreachable!(),
+                });
+        let restored_pages = first
+            .into_iter()
+            .chain(last.into_iter().rev())
+            .map(|(_, obj)| obj.as_reference().map_err(Error::from))
+            .take(orig_pages.len())
+            .collect::<Result<Vec<ObjectId>>>()?;
+
+        assert_eq!(orig_pages, restored_pages);
 
         Ok(())
     }
