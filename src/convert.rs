@@ -70,6 +70,21 @@ mod tests {
         Document::load("tests/data/sample.pdf").map_err(Into::into)
     }
 
+    fn restore_pages(pages: &Vec<Object>, orig_len: usize) -> Result<Vec<ObjectId>> {
+        let (first, last): (Vec<_>, Vec<_>) =
+            pages.iter().enumerate().partition(|(i, _)| match i % 4 {
+                1 | 2 => true,
+                0 | 3 => false,
+                _ => unreachable!(),
+            });
+        first
+            .into_iter()
+            .chain(last.into_iter().rev())
+            .map(|(_, obj)| obj.as_reference().map_err(Error::from))
+            .take(orig_len)
+            .collect()
+    }
+
     #[test]
     fn test_calc_resulting_length() {
         assert_eq!(16, calc_resulting_length(15));
@@ -113,30 +128,37 @@ mod tests {
         let mut doc = make_test_document()?;
 
         let orig_pages: Vec<ObjectId> = doc.page_iter().collect();
-        let len = calc_resulting_length(orig_pages.len());
+        let expected_len = calc_resulting_length(orig_pages.len());
 
         let pages_id = get_pages_id(&doc)?;
         let pages = build_new_pages(&mut doc, pages_id);
 
-        assert_eq!(len, pages.len());
+        assert_eq!(expected_len, pages.len());
 
         // re-construct the previous order
-        let (first, last): (Vec<_>, Vec<_>) =
-            pages
-                .into_iter()
-                .enumerate()
-                .partition(|(i, _)| match i % 4 {
-                    1 | 2 => true,
-                    0 | 3 => false,
-                    _ => unreachable!(),
-                });
-        let restored_pages = first
-            .into_iter()
-            .chain(last.into_iter().rev())
-            .map(|(_, obj)| obj.as_reference().map_err(Error::from))
-            .take(orig_pages.len())
-            .collect::<Result<Vec<ObjectId>>>()?;
+        let restored_pages = restore_pages(&pages, orig_pages.len())?;
 
+        assert_eq!(orig_pages, restored_pages);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_convert() -> Result<()> {
+        let mut doc = make_test_document()?;
+
+        let orig_pages: Vec<ObjectId> = doc.page_iter().collect();
+        let expected_len = calc_resulting_length(orig_pages.len());
+
+        convert(&mut doc)?;
+
+        let pages_dict = doc.get_object(get_pages_id(&doc)?)?.as_dict()?;
+        let len = pages_dict.get(b"Count")?.as_i64()?;
+        let pages = pages_dict.get(b"Kids")?.as_array()?;
+
+        let restored_pages = restore_pages(pages, orig_pages.len())?;
+
+        assert_eq!(expected_len, pages.len());
         assert_eq!(orig_pages, restored_pages);
 
         Ok(())
