@@ -45,6 +45,7 @@ fn test_print() {
         .arg("tests/data/sample.pdf")
         .arg("--print")
         .assert()
+        .success()
         .stdout(predicate::str::contains("-o sides=two-sided-short-edge"))
         .stdout(predicate::str::contains("-o number-up=2"))
         .stdout(predicate::str::contains("-o number-up-layout=lrtb"));
@@ -62,6 +63,7 @@ fn test_print_output() {
         .args(&["-o", path.to_str().unwrap()])
         .arg("--print")
         .assert()
+        .success()
         .stdout(predicate::str::contains(path.to_str().unwrap()));
 
     temp.assert(predicate::function(|x: &[u8]| !x.is_empty()).from_file_path());
