@@ -80,9 +80,9 @@ mod tests {
         let page_id = add_empty_page(&mut doc, pages_id);
 
         let dict = doc.get_object(page_id)?.as_dict()?;
-        assert_eq!(dict.get(b"Type")?.as_name_str()?, "Page");
-        assert_eq!(dict.get(b"Parent")?.as_reference()?, pages_id);
-        assert_eq!(dict.get(b"Contents")?.is_null(), false);
+        assert_eq!("Page", dict.get(b"Type")?.as_name_str()?);
+        assert_eq!(pages_id, dict.get(b"Parent")?.as_reference()?);
+        assert_eq!(false, dict.get(b"Contents")?.is_null());
 
         Ok(())
     }
