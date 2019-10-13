@@ -7,21 +7,19 @@ pub type Result<T> = result::Result<T, Error>;
 pub enum Error {
     IO(io::Error),
     PDF(lopdf::Error),
-    Print(process::ExitStatus),
-    InvaildPath(path::PathBuf),
-    MissingOutput,
-    LPNotFound,
+    Print(String, process::ExitStatus),
+    InvalidPath(path::PathBuf),
+    LPNotFound(String),
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Error::IO(e) => write!(f, "IO Error: {}", e),
-            Error::PDF(e) => write!(f, "PDF Error: {}", e),
-            Error::Print(code) => write!(f, "Print command returned non-zero exit code: {}", code),
-            Error::InvaildPath(path) => write!(f, "Unsupported path string: {}", path.display()),
-            Error::MissingOutput => write!(f, "--output is required except in print mode"),
-            Error::LPNotFound => write!(f, "`lp` command could not be found"),
+            Error::IO(e) => write!(f, "{}", e),
+            Error::PDF(e) => write!(f, "error processing PDF file: {}", e),
+            Error::Print(cmd, code) => write!(f, "`{}` returned non-zero {}", cmd, code),
+            Error::InvalidPath(path) => write!(f, "unsupported path string: {}", path.display()),
+            Error::LPNotFound(cmd) => write!(f, "`{}` could not be found", cmd),
         }
     }
 }
