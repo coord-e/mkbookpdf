@@ -14,10 +14,10 @@
 ## Usage
 
 ```shell
-# print input.pdf as a booklet 
+# prints input.pdf as a booklet
 $ mkbookpdf input.pdf -p
 
-# save converted PDF as output.pdf
+# writes the converted PDF to output.pdf
 $ mkbookpdf input.pdf -o output.pdf
 ```
 
