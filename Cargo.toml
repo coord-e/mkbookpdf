@@ -1,0 +1,21 @@
+[package]
+name = "mkbookpdf"
+version = "1.0.0-rc"
+authors = ["coord.e <me@coord-e.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "a command-line utility for booklet printing"
+homepage = "https://github.com/coord-e/mkbookpdf"
+repository = "https://github.com/coord-e/mkbookpdf"
+keywords = ["cli", "pdf", "print", "booklet"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+lopdf = "0.23.0"
+structopt = "0.3"
+tempfile = "3.1.0"
+
+[dev-dependencies]
+assert_cmd = "0.11"
+assert_fs = "0.11"
+predicates = "1.0.1"
