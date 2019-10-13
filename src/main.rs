@@ -8,13 +8,13 @@ use tempfile::NamedTempFile;
 #[structopt(name = "mkbooklet")]
 #[allow(clippy::option_option)]
 struct Opt {
+    #[structopt(parse(from_os_str))]
+    /// Input PDF file.
+    input: PathBuf,
+
     #[structopt(short, long, required_unless = "print", parse(from_os_str))]
     /// Specify the output file name. Requried unless --print is used.
     output: Option<PathBuf>,
-
-    #[structopt(name = "FILE", parse(from_os_str))]
-    /// Input PDF file.
-    input: PathBuf,
 
     #[structopt(short, long, name = "destination")]
     /// Print resulting PDF with `lp` to the named printer.
