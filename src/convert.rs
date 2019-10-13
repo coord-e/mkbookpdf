@@ -105,13 +105,23 @@ mod tests {
         let mut doc = make_test_document()?;
         let pages_id = get_pages_id(&doc)?;
 
-        let media_box = vec![0.into(), 0.into(), 50.into(), 50.into()].into();
-        let page_id = add_empty_page(&mut doc, media_box, pages_id);
+        let media_box_raw = vec![0, 0, 50, 50];
+
+        let media_box: Vec<_> = media_box_raw.clone().into_iter().map(Into::into).collect();
+        let page_id = add_empty_page(&mut doc, media_box.into(), pages_id);
 
         let dict = doc.get_object(page_id)?.as_dict()?;
         assert_eq!("Page", dict.get(b"Type")?.as_name_str()?);
         assert_eq!(pages_id, dict.get(b"Parent")?.as_reference()?);
         assert_eq!(false, dict.get(b"Contents")?.is_null());
+
+        let restored_media_box: Vec<_> = dict
+            .get(b"MediaBox")?
+            .as_array()?
+            .into_iter()
+            .map(|o| o.as_i64().map_err(Into::into))
+            .collect::<Result<_>>()?;
+        assert_eq!(media_box_raw, restored_media_box);
 
         Ok(())
     }
