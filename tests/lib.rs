@@ -34,6 +34,7 @@ fn test_output() {
         .assert()
         .success();
 
+    temp.assert(predicate::path::exists());
     temp.assert(predicate::function(|x: &[u8]| !x.is_empty()).from_file_path());
 }
 
@@ -66,6 +67,7 @@ fn test_print_output() {
         .success()
         .stdout(predicate::str::contains(path.to_str().unwrap()));
 
+    temp.assert(predicate::path::exists());
     temp.assert(predicate::function(|x: &[u8]| !x.is_empty()).from_file_path());
 }
 
