@@ -28,6 +28,7 @@ fn get_pages_id(doc: &Document) -> Result<ObjectId> {
 fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Vec<Object> {
     let pages: Vec<ObjectId> = doc.page_iter().collect();
     let len = calc_resulting_length(pages.len());
+    debug_assert!(len % 4 == 0);
 
     use std::iter::once;
     (0..len / 4)
