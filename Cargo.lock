@@ -413,7 +413,7 @@ dependencies = [
 
 [[package]]
 name = "mkbookpdf"
-version = "0.1.0"
+version = "1.0.0-rc"
 dependencies = [
  "assert_cmd 0.11.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "assert_fs 0.11.3 (registry+https://github.com/rust-lang/crates.io-index)",
