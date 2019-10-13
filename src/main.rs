@@ -43,7 +43,9 @@ fn run() -> Result<()> {
     if let Some(p) = opt.print {
         print_mode(doc, opt.output, p)
     } else {
-        doc.save(opt.output.unwrap())?;
+        let output = opt.output.unwrap();
+        doc.save(&output)?;
+        eprintln!("{}: duplex printing is required, with 2-up left-to-right layout and short-edge binding", output.display());
         Ok(())
     }
 }
