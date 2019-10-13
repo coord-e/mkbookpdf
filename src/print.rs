@@ -4,19 +4,19 @@ use std::io::ErrorKind;
 use std::path::Path;
 use std::process::Command;
 
-pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<()> {
+pub struct PrintOpt {
+    pub printer: Option<String>,
+    pub lp_bin: String,
+    pub quiet: bool,
+}
+
+pub fn print<P: AsRef<Path>>(path: P, opts: PrintOpt) -> Result<()> {
     let path = path.as_ref();
     let path_str = path
         .to_str()
         .ok_or_else(|| Error::InvaildPath(path.to_path_buf()))?;
 
-    let bin = match env::var("MKBL_LP") {
-        Ok(path) => path,
-        Err(VarError::NotPresent) => "lp".to_string(),
-        Err(VarError::NotUnicode(path)) => return Err(Error::InvaildPath(path.into())),
-    };
-
-    let mut cmd = Command::new(bin);
+    let mut cmd = Command::new(opts.lp_bin);
 
     cmd.args(&[
         "-o",
@@ -28,7 +28,7 @@ pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<()> {
         path_str,
     ]);
 
-    if let Some(p) = printer {
+    if let Some(p) = opts.printer {
         cmd.args(&["-d", &p]);
     }
 
