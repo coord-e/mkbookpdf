@@ -1,5 +1,14 @@
 # mkbookpdf
 
+[![Actions Status](https://github.com/coord-e/mkbookpdf/workflows/Test and Lint/badge.svg)](https://github.com/coord-e/mkbookpdf/actions?workflow=Test+and+Lint)
+[![Actions Status](https://github.com/coord-e/mkbookpdf/workflows/Release/badge.svg)](https://github.com/coord-e/mkbookpdf/actions?workflow=Release)
+[![Crates.io](https://img.shields.io/crates/v/mkbookpdf)](https://crates.io/crates/mkbookpdf)
+[![Crates.io](https://img.shields.io/crates/l/mkbookpdf)](https://crates.io/crates/mkbookpdf)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/coorde/mkbookpdf)](https://hub.docker.com/r/coorde/mkbookpdf)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/coorde/mkbookpdf)](https://hub.docker.com/r/coorde/mkbookpdf)
+[![MicroBadger Layers](https://img.shields.io/microbadger/layers/coorde/mkbookpdf)](https://microbadger.com/images/coorde/mkbookpdf)
+[![MicroBadger Size](https://img.shields.io/microbadger/image-size/coorde/mkbookpdf)](https://microbadger.com/images/coorde/mkbookpdf)
+
 `mkbookpdf` is a simple command-line utility for booklet printing.
 
 ## Usage
