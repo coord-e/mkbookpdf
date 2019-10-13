@@ -27,7 +27,7 @@ Platform|Download
 --------|--------
 Linux 64-bit|[mkbookpdf-x86_64-unknown-linux-musl](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-unknown-linux-musl)
 macOS 64-bit|[mkbookpdf-x86_64-apple-darwin](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-apple-darwin)
-Windows 64-bit|[mkbookpdf-x86_64-pc-windows-msvc](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-pc-windows-msvc)
+Windows 64-bit|[mkbookpdf-x86_64-pc-windows-msvc.exe](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-pc-windows-msvc.exe)
 
 ### with Cargo
 
