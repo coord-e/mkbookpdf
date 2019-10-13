@@ -39,12 +39,12 @@ jobs:
         with:
           command: test
           args: --release --all-features --target=${{ matrix.target }}
-      - run: mv target/${{ matrix.target }}/release/mkbooklet mkbooklet-${{ matrix.target }}
+      - run: mv target/${{ matrix.target }}/release/mkbookpdf mkbookpdf-${{ matrix.target }}
         if: matrix.os != 'windows-latest'
-      - run: move target\${{ matrix.target }}\release\mkbooklet.exe mkbooklet-${{ matrix.target }}.exe
+      - run: move target\${{ matrix.target }}\release\mkbookpdf.exe mkbookpdf-${{ matrix.target }}.exe
         if: matrix.os == 'windows-latest'
       - uses: softprops/action-gh-release@v1
         with:
-          files: mkbooklet-*
+          files: mkbookpdf-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

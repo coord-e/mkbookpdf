@@ -1,11 +1,11 @@
 use lopdf::Document;
-use mkbooklet::{PrintOpt, Result};
+use mkbookpdf::{PrintOpt, Result};
 use std::path::PathBuf;
 use structopt::StructOpt;
 use tempfile::NamedTempFile;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "mkbooklet")]
+#[structopt(name = "mkbookpdf")]
 #[allow(clippy::option_option)]
 struct Opt {
     #[structopt(parse(from_os_str))]
@@ -32,13 +32,13 @@ struct Opt {
 fn print_mode(doc: &mut Document, output: Option<PathBuf>, opts: PrintOpt) -> Result<()> {
     if let Some(ref path) = output {
         doc.save(path)?;
-        mkbooklet::print(path, opts)
+        mkbookpdf::print(path, opts)
     } else {
         let mut file = NamedTempFile::new()?;
         doc.save_to(&mut file)?;
 
         let path = file.into_temp_path();
-        mkbooklet::print(path, opts)
+        mkbookpdf::print(path, opts)
     }
 }
 
@@ -46,7 +46,7 @@ fn run() -> Result<()> {
     let opt = Opt::from_args();
     let doc = &mut Document::load(opt.input)?;
 
-    mkbooklet::convert(doc)?;
+    mkbookpdf::convert(doc)?;
 
     if let Some(p) = opt.print {
         let popts = PrintOpt {
@@ -69,7 +69,7 @@ fn main() {
     std::process::exit(match run() {
         Ok(()) => 0,
         Err(e) => {
-            eprintln!("mkbooklet: {}", e);
+            eprintln!("mkbookpdf: {}", e);
             1
         }
     });
