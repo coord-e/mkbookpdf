@@ -29,6 +29,8 @@ Linux 64-bit|[mkbookpdf-x86_64-unknown-linux-musl](https://github.com/coord-e/mk
 macOS 64-bit|[mkbookpdf-x86_64-apple-darwin](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-apple-darwin)
 Windows 64-bit|[mkbookpdf-x86_64-pc-windows-msvc.exe](https://github.com/coord-e/mkbookpdf/releases/latest/download/mkbookpdf-x86_64-pc-windows-msvc.exe)
 
+Note that printing feature (`-p`, `--print`) requires `lp` utility to be installed in your system. (This means you can't use `-p` in windows)
+
 ### with Cargo
 
 ```shell
