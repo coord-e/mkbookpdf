@@ -65,6 +65,14 @@ mod tests {
     }
 
     #[test]
+    fn test_calc_resulting_length() {
+        assert_eq!(16, calc_resulting_length(15));
+        assert_eq!(4, calc_resulting_length(2));
+        assert_eq!(32, calc_resulting_length(29));
+        assert_eq!(64, calc_resulting_length(64));
+    }
+
+    #[test]
     fn test_add_empty_page() -> Result<()> {
         let mut doc = make_test_document()?;
         let pages_id = get_pages_id(&doc)?;
