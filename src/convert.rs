@@ -1,4 +1,4 @@
-use crate::Result;
+use crate::{Error, Result};
 use lopdf::{dictionary, Document, Object, ObjectId, Stream};
 
 fn calc_resulting_length(len: usize) -> usize {
@@ -28,6 +28,10 @@ fn get_pages_id(doc: &Document) -> Result<ObjectId> {
 
 fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Result<Vec<Object>> {
     let pages: Vec<ObjectId> = doc.page_iter().collect();
+    if pages.is_empty() {
+        return Err(Error::EmptyPDF);
+    }
+
     let len = calc_resulting_length(pages.len());
     debug_assert!(len % 4 == 0);
 
