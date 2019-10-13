@@ -8,5 +8,6 @@ RUN cargo build --release --all-features --target=x86_64-unknown-linux-musl
 
 FROM alpine
 
+RUN apk add --update --no-cache cups
 COPY --from=0 /build/target/x86_64-unknown-linux-musl/release/mkbooklet /usr/bin/mkbooklet
 CMD ["/usr/bin/mkbooklet"]
