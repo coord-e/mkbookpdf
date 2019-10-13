@@ -69,7 +69,7 @@ fn main() {
     std::process::exit(match run() {
         Ok(()) => 0,
         Err(e) => {
-            eprintln!("{}", e);
+            eprintln!("mkbooklet: {}", e);
             1
         }
     });

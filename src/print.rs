@@ -15,7 +15,7 @@ pub fn print<P: AsRef<Path>>(path: P, opts: PrintOpt) -> Result<()> {
         .to_str()
         .ok_or_else(|| Error::InvaildPath(path.to_path_buf()))?;
 
-    let mut cmd = Command::new(opts.lp_bin);
+    let mut cmd = Command::new(&opts.lp_bin);
 
     cmd.args(&[
         "-o",
@@ -27,8 +27,8 @@ pub fn print<P: AsRef<Path>>(path: P, opts: PrintOpt) -> Result<()> {
         path_str,
     ]);
 
-    if let Some(p) = opts.printer {
-        cmd.args(&["-d", &p]);
+    if let Some(p) = &opts.printer {
+        cmd.args(&["-d", p]);
     }
 
     if opts.quiet {
@@ -37,14 +37,14 @@ pub fn print<P: AsRef<Path>>(path: P, opts: PrintOpt) -> Result<()> {
 
     let status = cmd.status().map_err(|e| {
         if e.kind() == ErrorKind::NotFound {
-            Error::LPNotFound
+            Error::LPNotFound(opts.lp_bin.clone())
         } else {
             Error::IO(e)
         }
     })?;
 
     if !status.success() {
-        Err(Error::Print(status))
+        Err(Error::Print(opts.lp_bin, status))
     } else {
         Ok(())
     }
