@@ -43,7 +43,7 @@ fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Result<Vec<Object>
 
     for page in &pages {
         let page_mut = doc.get_object_mut(page.clone())?.as_dict_mut()?;
-        page_mut.set(b"Parent".to_vec(), Object::Reference(pages_id));
+        page_mut.set("Parent", Object::Reference(pages_id));
     }
 
     use std::iter::once;
@@ -71,8 +71,8 @@ pub fn convert(doc: &mut Document) -> Result<()> {
 
     let pages_mut = doc.get_object_mut(pages_id)?.as_dict_mut()?;
 
-    pages_mut.set(b"Count".to_vec(), Object::Integer(new_pages.len() as i64));
-    pages_mut.set(b"Kids".to_vec(), Object::Array(new_pages));
+    pages_mut.set("Count", Object::Integer(new_pages.len() as i64));
+    pages_mut.set("Kids", Object::Array(new_pages));
 
     Ok(())
 }
