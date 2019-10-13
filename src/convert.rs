@@ -25,14 +25,12 @@ fn get_pages_id(doc: &Document) -> Result<ObjectId> {
     root.get(b"Pages")?.as_reference().map_err(Into::into)
 }
 
-pub fn convert(doc: &mut Document) -> Result<()> {
+fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Vec<Object> {
     let pages: Vec<ObjectId> = doc.page_iter().collect();
     let len = calc_resulting_length(pages.len());
 
-    let pages_id = get_pages_id(doc)?;
-
     use std::iter::once;
-    let new_pages = (0..len / 4)
+    (0..len / 4)
         .flat_map(|idx| {
             once(len - 2 * idx)
                 .chain(once(1 + 2 * idx))
@@ -46,12 +44,18 @@ pub fn convert(doc: &mut Document) -> Result<()> {
                 .unwrap_or_else(|| add_empty_page(doc, pages_id))
                 .into()
         })
-        .collect();
+        .collect()
+}
+
+pub fn convert(doc: &mut Document) -> Result<()> {
+    let pages_id = get_pages_id(doc)?;
+
+    let new_pages = build_new_pages(doc, pages_id);
 
     let pages_mut = doc.get_object_mut(pages_id)?.as_dict_mut()?;
 
+    pages_mut.set(b"Count".to_vec(), Object::Integer(new_pages.len() as i64));
     pages_mut.set(b"Kids".to_vec(), Object::Array(new_pages));
-    pages_mut.set(b"Count".to_vec(), Object::Integer(len as i64));
 
     Ok(())
 }
