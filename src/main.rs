@@ -19,6 +19,10 @@ struct Opt {
     #[structopt(short, long, name = "destination")]
     /// Print resulting PDF with `lp` to the named printer.
     print: Option<Option<String>>,
+
+    #[structopt(short, long)]
+    /// Suppress informational messages.
+    quiet: bool,
 }
 
 fn print_mode(doc: &mut Document, output: Option<PathBuf>, printer: Option<String>) -> Result<()> {
@@ -45,7 +49,9 @@ fn run() -> Result<()> {
     } else {
         let output = opt.output.unwrap();
         doc.save(&output)?;
-        eprintln!("{}: duplex printing is required, with 2-up left-to-right layout and short-edge binding", output.display());
+        if !opt.quiet {
+            eprintln!("{}: duplex printing is required, with 2-up left-to-right layout and short-edge binding", output.display());
+        }
         Ok(())
     }
 }
