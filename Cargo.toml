@@ -1,6 +1,6 @@
 [package]
 name = "mkbookpdf"
-version = "1.0.0-rc"
+version = "1.0.0"
 authors = ["coord.e <me@coord-e.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -9,6 +9,7 @@ homepage = "https://github.com/coord-e/mkbookpdf"
 repository = "https://github.com/coord-e/mkbookpdf"
 keywords = ["cli", "pdf", "print", "booklet"]
 categories = ["command-line-utilities"]
+readme = "README.md"
 
 [dependencies]
 lopdf = "0.23.0"
