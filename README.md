@@ -43,7 +43,7 @@ $ cargo install mkbookpdf
 
 ```shell
 # place this in your shell configuration (.bashrc, .zshrc, etc...)
-$ alias mkbookpdf="docker run --rm -v $(pwd)/data -v /var/run/cups:/var/run/cups coorde/mkbookpdf"
+$ alias mkbookpdf="docker run --rm -v $(pwd):/data -v /var/run/cups:/var/run/cups coorde/mkbookpdf"
 ```
 
 ## License
