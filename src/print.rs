@@ -1,4 +1,5 @@
 use crate::{Error, Result};
+use std::env::{self, VarError};
 use std::io::ErrorKind;
 use std::path::Path;
 use std::process::Command;
@@ -9,7 +10,13 @@ pub fn print<P: AsRef<Path>>(path: P, printer: Option<String>) -> Result<()> {
         .to_str()
         .ok_or_else(|| Error::InvaildPath(path.to_path_buf()))?;
 
-    let mut cmd = Command::new("lp");
+    let bin = match env::var("MKBL_LP") {
+        Ok(path) => path,
+        Err(VarError::NotPresent) => "lp".to_string(),
+        Err(VarError::NotUnicode(path)) => return Err(Error::InvaildPath(path.into())),
+    };
+
+    let mut cmd = Command::new(bin);
 
     cmd.args(&[
         "-o",
