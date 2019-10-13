@@ -1,8 +1,7 @@
 use crate::{Error, Result};
-use std::env::{self, VarError};
 use std::io::ErrorKind;
 use std::path::Path;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 pub struct PrintOpt {
     pub printer: Option<String>,
@@ -30,6 +29,10 @@ pub fn print<P: AsRef<Path>>(path: P, opts: PrintOpt) -> Result<()> {
 
     if let Some(p) = opts.printer {
         cmd.args(&["-d", &p]);
+    }
+
+    if opts.quiet {
+        cmd.stdout(Stdio::null());
     }
 
     let status = cmd.status().map_err(|e| {
