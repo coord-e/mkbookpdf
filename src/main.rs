@@ -1,5 +1,5 @@
 use lopdf::Document;
-use mkbookpdf::{PrintOpt, Result};
+use mkbookpdf::{Error, PrintOpt, Result};
 use std::path::PathBuf;
 use structopt::StructOpt;
 use tempfile::NamedTempFile;
@@ -24,6 +24,18 @@ struct Opt {
     /// Specify the `lp` executable to use when --print is used.
     lp_bin: String,
 
+    #[structopt(short = "i", long)]
+    /// Prompt before printing.
+    confirm: bool,
+
+    #[structopt(short = "I", long, conflicts_with = "confirm")]
+    /// Prompt before printing large output.
+    confirm_large: bool,
+
+    #[structopt(long, env = "MKBL_CONFIRM_WHEN", default_value = "10")]
+    /// Specify the number of papars to be prompted when -I is used.
+    confirm_when: usize,
+
     #[structopt(short, long)]
     /// Suppress informational messages.
     quiet: bool,
@@ -42,15 +54,47 @@ fn print_mode(doc: &mut Document, output: Option<PathBuf>, opts: PrintOpt) -> Re
     }
 }
 
+fn confirm(message: &str) -> Result<()> {
+    use std::io::{stdin, stdout, Write};
+
+    print!("{} [y/N] ", message);
+    stdout().flush()?;
+
+    let mut input = String::new();
+    stdin().read_line(&mut input)?;
+
+    match input.trim() {
+        "y" | "Y" | "yes" => Ok(()),
+        "n" | "N" | "no" | "" => Err(Error::Cancelled),
+        _ => confirm(message),
+    }
+}
+
+fn should_confirm(opt: &Opt, len: usize) -> bool {
+    match opt {
+        Opt { confirm: true, .. } => true,
+        Opt {
+            confirm_large: true,
+            confirm_when: when,
+            ..
+        } if *when < len => true,
+        _ => false,
+    }
+}
+
 fn run() -> Result<()> {
     let opt = Opt::from_args();
-    let doc = &mut Document::load(opt.input)?;
+    let doc = &mut Document::load(&opt.input)?;
 
-    mkbookpdf::convert(doc)?;
+    let len = mkbookpdf::convert(doc)?;
 
-    if let Some(p) = opt.print {
+    if let Some(p) = &opt.print {
+        if should_confirm(&opt, len) {
+            confirm(&format!("{} papers are to be printed. continue?", len))?;
+        }
+
         let popts = PrintOpt {
-            printer: p,
+            printer: p.clone(),
             lp_bin: opt.lp_bin,
             quiet: opt.quiet,
         };
