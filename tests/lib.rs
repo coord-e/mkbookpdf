@@ -1,9 +1,8 @@
 use assert_cmd::crate_name;
-use assert_cmd::prelude::*;
+use assert_cmd::Command;
 use assert_fs::prelude::*;
 use assert_fs::NamedTempFile;
 use predicates::prelude::*;
-use std::process::Command;
 
 #[test]
 fn test_empty_args() {
@@ -139,4 +138,71 @@ fn test_invalid_pdf() {
         .stderr(predicate::str::contains("Invalid file header"));
 
     temp.assert(predicate::function(|x: &[u8]| x.is_empty()).from_file_path());
+}
+
+#[test]
+fn test_confirm_cancel() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "true")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .arg("-i")
+        .write_stdin("n")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("cancelled"));
+}
+
+#[test]
+fn test_confirm_cancel_default() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "true")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .arg("-i")
+        .write_stdin("\n")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("cancelled"));
+}
+
+#[test]
+fn test_confirm_accept() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "true")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .arg("-i")
+        .write_stdin("y")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_confirm_when() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "true")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .arg("-I")
+        .assert()
+        .success();
+}
+
+#[test]
+fn test_confirm_when_large() {
+    Command::cargo_bin(crate_name!())
+        .unwrap()
+        .env("MKBL_LP", "true")
+        .env("MKBL_CONFIRM_WHEN", "5")
+        .arg("tests/data/sample.pdf")
+        .arg("--print")
+        .arg("-I")
+        .write_stdin("y")
+        .assert()
+        .success();
 }
