@@ -1,6 +1,6 @@
 [package]
 name = "mkbookpdf"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["coord.e <me@coord-e.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -17,6 +17,6 @@ structopt = "0.3"
 tempfile = "3.1.0"
 
 [dev-dependencies]
-assert_cmd = "0.11"
-assert_fs = "0.11"
+assert_cmd = "0.12"
+assert_fs = "0.12"
 predicates = "1.0.1"
