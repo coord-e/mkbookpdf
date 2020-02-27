@@ -10,6 +10,7 @@ pub enum Error {
     Print(String, process::ExitStatus),
     InvalidPath(path::PathBuf),
     LPNotFound(String),
+    Cancelled,
     EmptyPDF,
 }
 
@@ -21,6 +22,7 @@ impl fmt::Display for Error {
             Error::Print(cmd, code) => write!(f, "`{}` returned non-zero {}", cmd, code),
             Error::InvalidPath(path) => write!(f, "unsupported path string: {}", path.display()),
             Error::LPNotFound(cmd) => write!(f, "`{}` could not be found", cmd),
+            Error::Cancelled => write!(f, "cancelled by user"),
             Error::EmptyPDF => write!(f, "input PDF must have at least one page in it"),
         }
     }

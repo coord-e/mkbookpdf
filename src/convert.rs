@@ -65,17 +65,18 @@ fn build_new_pages(doc: &mut Document, pages_id: ObjectId) -> Result<Vec<Object>
         .collect())
 }
 
-pub fn convert(doc: &mut Document) -> Result<()> {
+pub fn convert(doc: &mut Document) -> Result<usize> {
     let pages_id = get_pages_id(doc)?;
 
     let new_pages = build_new_pages(doc, pages_id)?;
+    let new_pages_len = new_pages.len();
 
     let pages_mut = doc.get_object_mut(pages_id)?.as_dict_mut()?;
 
-    pages_mut.set("Count", Object::Integer(new_pages.len() as i64));
+    pages_mut.set("Count", Object::Integer(new_pages_len as i64));
     pages_mut.set("Kids", Object::Array(new_pages));
 
-    Ok(())
+    Ok(new_pages_len / 4)
 }
 
 #[cfg(test)]
