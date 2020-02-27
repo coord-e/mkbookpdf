@@ -9,35 +9,35 @@ use tempfile::NamedTempFile;
 #[allow(clippy::option_option)]
 struct Opt {
     #[structopt(parse(from_os_str))]
-    /// Input PDF file.
+    /// Input PDF file
     input: PathBuf,
 
     #[structopt(short, long, required_unless = "destination", parse(from_os_str))]
-    /// Specify the output file name. Requried unless --print is used.
+    /// Specify the output file name. Requried unless --print is used
     output: Option<PathBuf>,
 
     #[structopt(short, long, name = "destination")]
-    /// Print resulting PDF with `lp` to the named printer.
+    /// Print resulting PDF with `lp` to the named printer
     print: Option<Option<String>>,
 
     #[structopt(long, env = "MKBL_LP", default_value = "lp")]
-    /// Specify the `lp` executable to use when --print is used.
+    /// Specify the `lp` executable to use when --print is used
     lp_bin: String,
 
     #[structopt(short = "i", long)]
-    /// Prompt before printing.
+    /// Prompt before printing
     confirm: bool,
 
     #[structopt(short = "I", long, conflicts_with = "confirm")]
-    /// Prompt before printing large output.
+    /// Prompt before printing large output
     confirm_large: bool,
 
     #[structopt(long, env = "MKBL_CONFIRM_WHEN", default_value = "10")]
-    /// Specify the number of papars to be prompted when -I is used.
+    /// Specify the number of papars to be prompted when -I is used
     confirm_when: usize,
 
     #[structopt(short, long)]
-    /// Suppress informational messages.
+    /// Suppress informational messages
     quiet: bool,
 }
 
